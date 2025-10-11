@@ -6,119 +6,28 @@
     <title>游戏副站</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { padding: 20px; background: #f5f5f5; min-height: 100vh; }
+        body { padding: 20px; background: #f5f5f5; }
         .title { font-size: 28px; font-weight: bold; margin-bottom: 30px; color: #333; }
-        .snake-btn { padding: 12px 24px; font-size: 18px; border: none; background: #ea4335; color: white; border-radius: 6px; cursor: pointer; margin-bottom: 20px; transition: background 0.3s; }
-        .snake-btn:hover { background: #d93025; }
-        #gameContainer { width: 100%; max-width: 600px; height: 400px; border: 2px solid #333; border-radius: 8px; overflow: hidden; display: none; margin: 0 auto; }
+        .snake-btn { padding: 12px 24px; font-size: 18px; border: none; background: #ea4335; color: white; border-radius: 6px; cursor: pointer; margin-bottom: 20px; }
+        #gameContainer { width: 100%; max-width: 600px; height: 400px; border: 2px solid #333; border-radius: 8px; overflow: hidden; display: none; }
         #gameFrame { width: 100%; height: 100%; border: none; }
-        .status-message { color: #666; font-size: 16px; margin: 10px 0; padding: 10px; border-radius: 4px; display: none; }
-        .loading { background-color: #e8f4fd; }
-        .error { background-color: #fce8e6; color: #d93025; }
-        .retry-btn { padding: 8px 16px; margin-left: 10px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer; display: none; }
     </style>
 </head>
 <body>
     <h1 class="title">游戏列表</h1>
     <button class="snake-btn" id="snakeBtn">贪吃蛇</button>
-    <div class="status-message loading" id="loadingMsg">游戏加载中，请稍候...</div>
-    <div class="status-message error" id="errorMsg">
-        加载失败，请重试
-        <button class="retry-btn" id="retryBtn">重试</button>
-    </div>
     <div id="gameContainer">
-        <iframe id="gameFrame"></iframe>
+        <iframe id="gameFrame" src="https://fable-dzx.github.io/Snake-game/"></iframe>
     </div>
 
     <script>
-        // 定义多个备用链接，优先使用国内CDN
-        const gameSources = [
-            // 国内CDN加速链接（优先使用）
-            "https://cdn.jsdelivr.net/gh/Fable-Dzx/Snake-game@master/index.html",
-            // 代理加速链接
-            "https://ghproxy.com/https://raw.githubusercontent.com/Fable-Dzx/Snake-game/master/index.html",
-            // 原始链接作为最后备选
-            "https://raw.githack.com/Fable-Dzx/Snake-game/master/index.html"
-        ];
-        
-        let currentSourceIndex = 0;
         const snakeBtn = document.getElementById('snakeBtn');
         const gameContainer = document.getElementById('gameContainer');
-        const gameFrame = document.getElementById('gameFrame');
-        const loadingMsg = document.getElementById('loadingMsg');
-        const errorMsg = document.getElementById('errorMsg');
-        const retryBtn = document.getElementById('retryBtn');
-        let loadTimeout;
 
-        // 隐藏所有状态消息
-        function hideAllMessages() {
-            loadingMsg.style.display = "none";
-            errorMsg.style.display = "none";
-            retryBtn.style.display = "none";
-        }
-
-        // 加载游戏的函数
-        function loadGame() {
-            // 重置状态
-            hideAllMessages();
-            gameContainer.style.display = "block";
-            loadingMsg.style.display = "block";
-            
-            // 清除之前的超时
-            if (loadTimeout) clearTimeout(loadTimeout);
-            
-            // 设置超时处理（10秒）
-            loadTimeout = setTimeout(() => {
-                // 超时后尝试下一个链接
-                currentSourceIndex++;
-                if (currentSourceIndex < gameSources.length) {
-                    loadingMsg.textContent = `加载较慢，尝试备用链接(${currentSourceIndex + 1}/${gameSources.length})...`;
-                    loadGame(); // 递归调用加载下一个链接
-                } else {
-                    // 所有链接都尝试失败
-                    hideAllMessages();
-                    errorMsg.style.display = "block";
-                    retryBtn.style.display = "inline-block";
-                }
-            }, 10000); // 10秒超时
-            
-            // 设置iframe源
-            gameFrame.src = gameSources[currentSourceIndex];
-            
-            // 监听加载成功
-            gameFrame.onload = function() {
-                clearTimeout(loadTimeout);
-                hideAllMessages();
-                // 滚动到游戏容器
-                gameContainer.scrollIntoView({ behavior: "smooth" });
-            };
-            
-            // 监听加载错误
-            gameFrame.onerror = function() {
-                clearTimeout(loadTimeout);
-                currentSourceIndex++;
-                if (currentSourceIndex < gameSources.length) {
-                    loadGame();
-                } else {
-                    hideAllMessages();
-                    errorMsg.style.display = "block";
-                    retryBtn.style.display = "inline-block";
-                }
-            };
-        }
-
-        // 初始点击事件
         snakeBtn.addEventListener('click', () => {
-            currentSourceIndex = 0; // 重置为第一个链接
-            loadGame();
-        });
-
-        // 重试按钮事件
-        retryBtn.addEventListener('click', () => {
-            currentSourceIndex = 0; // 重置为第一个链接
-            loadGame();
+            gameContainer.style.display = "block";
+            gameContainer.scrollIntoView({ behavior: "smooth" });
         });
     </script>
 </body>
 </html>
-    
